@@ -20,7 +20,10 @@ pub fn convert(python_source: &str) -> Result<String> {
     let ast = parser::parse_python(python_source)?;
     
     // Convert AST to IR
-    let ir_module = parser::ast_to_ir(ast)?;
+    let mut ir_module = parser::ast_to_ir(ast)?;
+    
+    // Apply transformations (type inference, optimizations, etc.)
+    ir_module = transforms::transform(ir_module)?;
     
     // Generate Rust code
     let rust_code = generator::generate(ir_module)?;
