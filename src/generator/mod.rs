@@ -5,6 +5,8 @@
 mod expr_gen;
 mod stmt_gen;
 mod type_map;
+pub mod builtins;
+pub mod string_methods;
 
 use crate::error::{Error, Result};
 use crate::ir::{Function, Module, Statement};

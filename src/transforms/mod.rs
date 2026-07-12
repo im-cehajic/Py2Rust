@@ -6,6 +6,8 @@
 //! - Optimization passes
 
 pub mod type_inference;
+pub mod ownership;
+pub mod optimizer;
 
 use crate::error::Result;
 use crate::ir::Module;
@@ -14,6 +16,12 @@ use crate::ir::Module;
 pub fn transform(mut module: Module) -> Result<Module> {
     // Run type inference
     type_inference::infer_types(&mut module)?;
+    
+    // Run ownership analysis (placeholder for now)
+    ownership::OwnershipAnalyzer::analyze(&module)?;
+    
+    // Run optimizations
+    module = optimizer::optimize(module)?;
     
     Ok(module)
 }

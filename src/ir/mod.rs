@@ -3,6 +3,8 @@
 //! This module defines language-agnostic IR structures that represent
 //! the semantic meaning of code independent of source/target language.
 
+pub mod class;
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
