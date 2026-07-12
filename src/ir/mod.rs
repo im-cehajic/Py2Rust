@@ -28,7 +28,7 @@ pub struct VarDecl {
     pub initializer: Option<Box<Expr>>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum Type {
     Int,
     Float,
@@ -100,7 +100,7 @@ pub enum Expr {
     },
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub enum BinOp {
     Add,
     Sub,
@@ -110,14 +110,14 @@ pub enum BinOp {
     Pow,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub enum UnaryOp {
     Not,
     Neg,
     Pos,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub enum CmpOp {
     Eq,
     NotEq,
