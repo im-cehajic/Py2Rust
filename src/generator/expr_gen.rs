@@ -34,7 +34,6 @@ impl ExpressionGenerator {
             }
             Expr::UnaryOp { op, operand } => {
                 let operand = self.generate_expr(operand)?;
-                let op_str = self.unaryop_to_str(*op);
                 match op {
                     UnaryOp::Not => Ok(format!("!({})", operand)),
                     UnaryOp::Neg => Ok(format!("-({})", operand)),
@@ -62,15 +61,17 @@ impl ExpressionGenerator {
                 Ok(format!("vec![{}]", items_str.join(", ")))
             }
             Expr::Dict(pairs) => {
-                let mut map_str = String::from("{");
-                map_str.push_str("\n");
-                for (k, v) in pairs {
-                    let key = self.generate_expr(k)?;
-                    let val = self.generate_expr(v)?;
-                    map_str.push_str(&format!("    {}: {},\n", key, val));
+                if pairs.is_empty() {
+                    Ok("HashMap::new()".to_string())
+                } else {
+                    let mut items = Vec::new();
+                    for (k, v) in pairs {
+                        let key = self.generate_expr(k)?;
+                        let val = self.generate_expr(v)?;
+                        items.push(format!("({}, {})", key, val));
+                    }
+                    Ok(format!("HashMap::from([{}])", items.join(", ")))
                 }
-                map_str.push_str("}");
-                Ok(format!("HashMap::from([{}])", map_str))
             }
             Expr::Index { object, index } => {
                 let obj = self.generate_expr(object)?;
@@ -91,15 +92,7 @@ impl ExpressionGenerator {
             BinOp::Mul => "*",
             BinOp::Div => "/",
             BinOp::Mod => "%",
-            BinOp::Pow => ".pow", // Will need special handling
-        }
-    }
-
-    fn unaryop_to_str(&self, op: UnaryOp) -> &'static str {
-        match op {
-            UnaryOp::Not => "!",
-            UnaryOp::Neg => "-",
-            UnaryOp::Pos => "+",
+            BinOp::Pow => ".pow",
         }
     }
 

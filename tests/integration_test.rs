@@ -109,16 +109,6 @@ fn test_comparison_operators() {
     let python_code = r#"
 if x == 5:
     y = 1
-elif x != 3:
-    y = 2
-else:
-    y = 3
-"#;
-
-    // Note: elif not yet supported, but we can test basic comparisons
-    let python_code = r#"
-if x == 5:
-    y = 1
 else:
     y = 2
 "#;
@@ -127,4 +117,5 @@ else:
     assert!(result.is_ok(), "Failed to convert: {:?}", result.err());
     let rust_code = result.unwrap();
     println!("Generated Rust:\n{}", rust_code);
+    assert!(rust_code.contains("if"));
 }
