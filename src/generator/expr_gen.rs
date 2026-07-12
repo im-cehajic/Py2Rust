@@ -5,6 +5,12 @@ use crate::ir::{BinOp, CmpOp, Expr, UnaryOp};
 
 pub struct ExpressionGenerator;
 
+impl Default for ExpressionGenerator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ExpressionGenerator {
     pub fn new() -> Self {
         Self
@@ -23,8 +29,8 @@ impl ExpressionGenerator {
                 }
             }
             Expr::Bool(b) => Ok(b.to_string()),
-            Expr::Str(s) => Ok(format!(r#"\"{}\""#, s.escape_default())),
-            Expr::None => Ok("None".to_string()),
+            Expr::Str(s) => Ok(format!(r#"\"{}\"#, s.escape_default())),
+            Expr::None => Ok("()".to_string()),
             Expr::Var(name) => Ok(name.clone()),
             Expr::BinOp { left, op, right } => {
                 let left = self.generate_expr(left)?;
@@ -92,7 +98,7 @@ impl ExpressionGenerator {
             BinOp::Mul => "*",
             BinOp::Div => "/",
             BinOp::Mod => "%",
-            BinOp::Pow => ".pow",
+            BinOp::Pow => "^",
         }
     }
 
