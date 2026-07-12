@@ -10,13 +10,20 @@ use crate::error::{Error, Result};
 use crate::ir::{Function, Module, Statement};
 use stmt_gen::StatementGenerator;
 
+pub use type_map::type_to_rust_str;
+
 /// Generate Rust code from IR module
 pub fn generate(module: Module) -> Result<String> {
     let mut output = String::new();
+    
+    // Add standard imports if needed
+    output.push_str("use std::collections::HashMap;\n");
+    output.push_str("use std::fmt;\n\n");
 
     // Generate all functions
     for func in module.functions {
-        output.push_str(&generate_function(&func)?);n        output.push_str("\n\n");
+        output.push_str(&generate_function(&func)?);
+        output.push_str("\n\n");
     }
 
     // Generate main function if there are top-level statements
@@ -27,7 +34,7 @@ pub fn generate(module: Module) -> Result<String> {
             let stmt_code = stmt_gen.generate_statement(&stmt)?;
             output.push_str(&indent(&stmt_code, 1));
         }
-        output.push_str("}");
+        output.push_str("}\n");
     }
 
     Ok(output)
@@ -44,20 +51,19 @@ fn generate_function(func: &Function) -> Result<String> {
         if i > 0 {
             output.push_str(", ");
         }
-        output.push_str(&format!("${}: ", param.name));
+        output.push_str(&format!("{}: ", param.name));
         output.push_str(&type_map::infer_type_string(param.type_.as_ref()));
     }
 
-    output.push_str(") ");
+    output.push_str(")");
 
     // Return type
     if let Some(ret_type) = &func.return_type {
-        output.push_str("-> ");
-        output.push_str(&type_map::type_to_rust_str(ret_type));
-        output.push_str(" ");
+        output.push_str(" -> ");
+        output.push_str(&type_to_rust_str(ret_type));
     }
 
-    output.push_str("{\n");
+    output.push_str(" {\n");
 
     // Function body
     let mut stmt_gen = StatementGenerator::new();

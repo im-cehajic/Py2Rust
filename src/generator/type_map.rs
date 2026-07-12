@@ -10,14 +10,20 @@ pub fn type_to_rust_str(ty: &Type) -> String {
         Type::Bool => "bool".to_string(),
         Type::String => "String".to_string(),
         Type::None => "()".to_string(),
-        Type::Vec(inner) => format!("Vec<{}>", type_to_rust_str(inner)),
-        Type::HashMap(k, v) => format!(
-            "HashMap<{}, {}>",
-            type_to_rust_str(k),
-            type_to_rust_str(v)
-        ),
+        Type::Vec(inner) => {
+            let inner_str = type_to_rust_str(inner);
+            match inner.as_ref() {
+                Type::Inferred => "Vec<i32>".to_string(), // Default to i32 if inferred
+                _ => format!("Vec<{}>", inner_str),
+            }
+        }
+        Type::HashMap(k, v) => {
+            let k_str = type_to_rust_str(k);
+            let v_str = type_to_rust_str(v);
+            format!("HashMap<{}, {}>", k_str, v_str)
+        }
         Type::Custom(name) => name.clone(),
-        Type::Inferred => "_".to_string(),
+        Type::Inferred => "i32".to_string(), // Default inference
     }
 }
 
@@ -25,6 +31,6 @@ pub fn type_to_rust_str(ty: &Type) -> String {
 pub fn infer_type_string(ty: Option<&Type>) -> String {
     match ty {
         Some(t) => type_to_rust_str(t),
-        None => "_".to_string(), // Let Rust infer
+        None => "i32".to_string(), // Default to i32
     }
 }

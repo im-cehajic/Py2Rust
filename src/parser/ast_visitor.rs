@@ -272,6 +272,37 @@ impl AstToIrVisitor {
                     right: Box::new(right),
                 })
             }
+            ExprKind::List { elts, .. } => {
+                let mut items = Vec::new();
+                for elt in elts {
+                    items.push(self.visit_expr(elt)?);
+                }
+                Ok(Expr::List(items))
+            }
+            ExprKind::Dict { keys, values } => {
+                let mut pairs = Vec::new();
+                for (k, v) in keys.into_iter().zip(values.into_iter()) {
+                    let key = self.visit_expr(k)?;
+                    let val = self.visit_expr(v)?;
+                    pairs.push((key, val));
+                }
+                Ok(Expr::Dict(pairs))
+            }
+            ExprKind::Subscript { value, slice, .. } => {
+                let obj = self.visit_expr(*value)?;
+                let idx = self.visit_expr(*slice)?;
+                Ok(Expr::Index {
+                    object: Box::new(obj),
+                    index: Box::new(idx),
+                })
+            }
+            ExprKind::Attribute { value, attr, .. } => {
+                let obj = self.visit_expr(*value)?;
+                Ok(Expr::Attribute {
+                    object: Box::new(obj),
+                    attr,
+                })
+            }
             _ => Err(Error::ParseError(
                 "Unsupported expression type".to_string(),
             )),

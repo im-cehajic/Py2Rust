@@ -86,6 +86,16 @@ pub enum Expr {
         op: CmpOp,
         right: Box<Expr>,
     },
+    List(Vec<Expr>),
+    Dict(Vec<(Expr, Expr)>),
+    Index {
+        object: Box<Expr>,
+        index: Box<Expr>,
+    },
+    Attribute {
+        object: Box<Expr>,
+        attr: String,
+    },
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
