@@ -3,8 +3,27 @@ name = "py2rust"
 version = "0.1.0"
 edition = "2021"
 description = "A Python to Rust code converter"
-authors = ["Your Name"]
+authors = ["im-cehajic"]
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/im-cehajic/Py2Rust"
+keywords = ["python", "rust", "converter", "transpiler"]
+categories = ["development-tools", "parser-implementations"]
+
+[[bin]]
+name = "py2rust"
+path = "src/main.rs"
+
+[[example]]
+name = "sorting"
+path = "examples/sorting.rs"
+
+[[example]]
+name = "math_functions"
+path = "examples/math_functions.rs"
+
+[[example]]
+name = "data_structures"
+path = "examples/data_structures.rs"
 
 [dependencies]
 rustpython_parser = "0.3"
@@ -17,7 +36,14 @@ log = "0.4"
 env_logger = "0.11"
 regex = "1.10"
 case = "1.0"
-indoc = "2.0"
 
 [dev-dependencies]
 tempfile = "3.8"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+
+[profile.dev]
+opt-level = 0
